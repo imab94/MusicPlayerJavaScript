@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="Music_29918.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player APP</title>
+    <link rel="stylesheet" href="musicplayer.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</head>
+<body>
+    
+    <div class="container">
+		<div class="music-player">
+			<div class="controls">
+				<i id="backward" class="fa fa-backward"></i>
+				<i id="play-pause" class="fa fa-play"></i>
+				<i id="forward" class="fa fa-forward"></i>
+			</div>
+			<div class="progress-bar">
+				<div class="progress"></div>
+        <!-- <div class="time-info">
+				<span class="current-time">0:00</span> / <span class="total-time">0:00</span>
+			</div> -->
+			</div>
+			<div class="playlist">
+				<ul>
+					<li>
+						<img src="songs.jpeg" alt="Song image">
+						<span>Teri Mitti - B Praak</span>
+						<i id="play1" class="fa fa-play play-song"></i>
+						<audio src="teriMittiSong.mp3"></audio>
+					</li>
+					<li>
+						<img src="songs.jpeg" alt="Song image">
+						<span>Bandeya Re Bandeya - Arijit Singh</span>
+						<i id="play2" class="fa fa-play play-song"></i>
+						<audio src="bandeyaSong.mp3"></audio>
+					</li>
+					<li>
+						<img src="songs.jpeg" alt="Song image">
+						<span>Kesariya - Arijit Singh [Brahmastra]</span>
+						<i id="play3" class="fa fa-play play-song"></i>
+						<audio src="teriMittiSong.mp3"></audio>
+					</li>
+					<li>
+						<img src="songs.jpeg" alt="Song image">
+						<span>Dil Ibadat - KK</span>
+						<i id="play4" class="fa fa-play play-song"></i>
+						<audio src="teriMittiSong.mp3"></audio>
+					</li>
+					<li>
+						<img src="songs.jpeg" alt="Song image">
+						<span>Ik Tera - Maninder Buttar</span>
+						<i id="play5" class="fa fa-play play-song"></i>
+						<audio src="bandeyaSong.mp3"></audio>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+<script>
+  const audio = new Audio();
+  let isPlaying = false;
+  let currentSongIndex = 0;
+  
+  const playlist = document.querySelectorAll('.playlist li');
+  const progress = document.querySelector('.progress');
+  const progressBar = document.querySelector('.progress-bar');
+  const backwardButton = document.querySelector('#backward');
+  const forwardButton = document.querySelector('#forward');
+  const playButton = document.querySelector('#play-pause');
+  
+  // function to play audio
+  function playAudio() {
+    if (audio.src === '') {
+      currentSongIndex = 0;
+    } else {
+      currentSongIndex++;
+      if (currentSongIndex >= playlist.length) {
+        currentSongIndex = 0;
+      }
+    }    
+    audio.play();
+    isPlaying = true;
+    playButton.classList.remove('fa-play');
+    playButton.classList.add('fa-pause');
+  }
+  
+  // function to pause audio
+  function pauseAudio() {
+    audio.pause();
+    isPlaying = false;
+    playButton.classList.remove('fa-pause');
+    playButton.classList.add('fa-play');
+  }
+  
+  // function to toggle play and pause
+  function togglePlayPause() {
+    if (isPlaying) {
+      pauseAudio();
+    } else {
+      playAudio();
+    }
+  }
+  
+  playButton.addEventListener('click', togglePlayPause);
+  
+  audio.addEventListener('ended', () => {
+    pauseAudio();
+    if (currentSongIndex < playlist.length - 1) {
+      currentSongIndex++;
+      playAudio();
+    } else {
+      currentSongIndex = 0;
+    }
+  });
+  
+  // function to update progress bar
+  function updateProgress() {
+    const percent = (audio.currentTime / audio.duration) * 100;
+    progress.style.width = `${percent}%`;
+  }
+  
+  // function to forward song
+  function forwardSong() {
+    if (currentSongIndex === playlist.length - 1) {
+      currentSongIndex = 0;
+    } else {
+      currentSongIndex++;
+    }
+    pauseAudio();
+    audio.src = playlist[currentSongIndex].querySelector('audio').src;
+    playAudio();
+  }
+  
+  // function to backward song
+  function backwardSong() {
+    if (currentSongIndex === 0) {
+      currentSongIndex = playlist.length - 1;
+    } else {
+      currentSongIndex--;
+    }
+    pauseAudio();
+    audio.src = playlist[currentSongIndex].querySelector('audio').src;
+    playAudio();
+  }
+  
+  // set initial progress bar width
+  progress.style.width = '0%';
+  
+  // add event listeners to buttons
+  backwardButton.addEventListener('click', backwardSong);
+  forwardButton.addEventListener('click', forwardSong);
+  
+  // add event listener to audio for updating progress bar
+  audio.addEventListener('timeupdate', updateProgress);
+  
+  // add event listener to progress bar for seeking in audio
+  progressBar.addEventListener('click', (event) => {
+    const percent = event.offsetX / progressBar.offsetWidth;
+    audio.currentTime = percent * audio.duration;
+  });
+  
+  // add event listener to each song to play on click
+  const playSongButtons = document.querySelectorAll('.play-song');
+  playSongButtons.forEach((icon, index) => {
+    icon.addEventListener('click', () => {
+      currentSongIndex = index;
+      audio.src = playlist[currentSongIndex].querySelector('audio').src;
+      togglePlayPause();
+    });
+  });
+
+  
+</script>
+</body>
+</html>
