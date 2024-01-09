@@ -16,54 +16,72 @@
 </head>
 <body>
     
-    <div class="container">
-		<div class="music-player">
-			<div class="controls">
-				<i id="backward" class="fa fa-backward"></i>
-				<i id="play-pause" class="fa fa-play"></i>
-				<i id="forward" class="fa fa-forward"></i>
-			</div>
-			<div class="progress-bar">
-				<div class="progress"></div>
-        <!-- <div class="time-info">
-				<span class="current-time">0:00</span> / <span class="total-time">0:00</span>
-			</div> -->
-			</div>
-			<div class="playlist">
-				<ul>
-					<li>
-						<img src="songs.jpeg" alt="Song image">
-						<span>Teri Mitti - B Praak</span>
-						<i id="play1" class="fa fa-play play-song"></i>
-						<audio src="teriMittiSong.mp3"></audio>
-					</li>
-					<li>
-						<img src="songs.jpeg" alt="Song image">
-						<span>Bandeya Re Bandeya - Arijit Singh</span>
-						<i id="play2" class="fa fa-play play-song"></i>
-						<audio src="bandeyaSong.mp3"></audio>
-					</li>
-					<li>
-						<img src="songs.jpeg" alt="Song image">
-						<span>Kesariya - Arijit Singh [Brahmastra]</span>
-						<i id="play3" class="fa fa-play play-song"></i>
-						<audio src="teriMittiSong.mp3"></audio>
-					</li>
-					<li>
-						<img src="songs.jpeg" alt="Song image">
-						<span>Dil Ibadat - KK</span>
-						<i id="play4" class="fa fa-play play-song"></i>
-						<audio src="teriMittiSong.mp3"></audio>
-					</li>
-					<li>
-						<img src="songs.jpeg" alt="Song image">
-						<span>Ik Tera - Maninder Buttar</span>
-						<i id="play5" class="fa fa-play play-song"></i>
-						<audio src="bandeyaSong.mp3"></audio>
-					</li>
-				</ul>
-			</div>
-		</div>
+  <div class="container">
+      <div class="music-player">
+        <div class="controls">
+          <i id="backward" class="fa fa-backward"></i>
+          <i id="play-pause" class="fa fa-play"></i>
+          <i id="forward" class="fa fa-forward"></i>
+        </div>
+        <div class="progress-bar">
+          <div class="progress">
+          </div>
+        </div>
+        <div class="time-info my-0">
+          <span class="current-time">0:00</span><span class="total-time">0:00</span>
+        </div>
+        <div class="playlist-wrapper">
+          <div class="playlist">
+            <ul>
+              <li>
+                <img src="songs.jpeg" alt="Song image">
+                <span>Teri Mitti - B Praak</span>
+                <i id="play1" class="fa fa-play play-song"></i>
+                <audio src="teriMittiSong.mp3"></audio>
+              </li>
+              <li>
+                <img src="songs.jpeg" alt="Song image">
+                <span>Bandeya Re Bandeya - Arijit Singh</span>
+                <i id="play2" class="fa fa-play play-song"></i>
+                <audio src="bandeyaSong.mp3"></audio>
+              </li>
+              <li>
+                <img src="songs.jpeg" alt="Song image">
+                <span>Kesariya - Arijit Singh [Brahmastra]</span>
+                <i id="play3" class="fa fa-play play-song"></i>
+                <audio src="teriMittiSong.mp3"></audio>
+              </li>
+              <li>
+                <img src="songs.jpeg" alt="Song image">
+                <span>Dil Ibadat - KK</span>
+                <i id="play4" class="fa fa-play play-song"></i>
+                <audio src="teriMittiSong.mp3"></audio>
+              </li>
+              <li>
+                <img src="songs.jpeg" alt="Song image">
+                <span>Ik Tera - Maninder Buttar</span>
+                <i id="play5" class="fa fa-play play-song"></i>
+                <audio src="bandeyaSong.mp3"></audio>
+              </li>
+              <li>
+                <img src="songs.jpeg" alt="Song image">
+                <span>Dil Ibadat - KK</span>
+                <i id="play6" class="fa fa-play play-song"></i>
+                <audio src="bandeyaSong.mp3"></audio>
+              </li>
+              <li>
+                <img src="songs.jpeg" alt="Song image">
+                <span>Ik Tera - Maninder Buttar</span>
+                <i id="play7" class="fa fa-play play-song"></i>
+                <audio src="teriMittiSong.mp3"></audio>
+              </li>
+            </ul>
+            <!-- <ul id="songList">
+              <p id="noSongs">NO SONGS AVAILABLE NOW</p>
+            </ul> -->
+          </div>
+        </div>
+      </div>
 	</div>
 
 <script>
@@ -102,17 +120,7 @@
     playButton.classList.add('fa-play');
   }
   
-  // function to toggle play and pause
-  function togglePlayPause() {
-    if (isPlaying) {
-      pauseAudio();
-    } else {
-      playAudio();
-    }
-  }
-  
-  playButton.addEventListener('click', togglePlayPause);
-  
+    
   audio.addEventListener('ended', () => {
     pauseAudio();
     if (currentSongIndex < playlist.length - 1) {
@@ -169,17 +177,94 @@
     audio.currentTime = percent * audio.duration;
   });
   
-  // add event listener to each song to play on click
-  const playSongButtons = document.querySelectorAll('.play-song');
-  playSongButtons.forEach((icon, index) => {
-    icon.addEventListener('click', () => {
-      currentSongIndex = index;
-      audio.src = playlist[currentSongIndex].querySelector('audio').src;
-      togglePlayPause();
-    });
+  // ... (existing code remains unchanged)
+
+// Function to toggle play/pause icon
+function togglePlayPause(icon) {
+  const allIcons = document.querySelectorAll('.play-song');
+
+  // Pause all other songs before toggling the clicked song
+  allIcons.forEach((songIcon) => {
+    if (songIcon !== icon) {
+      songIcon.classList.remove('fa-pause');
+      songIcon.classList.add('fa-play');
+
+      // Pause audio if playing
+      const audioElement = songIcon.parentElement.querySelector('audio');
+      if (!audioElement.paused) {
+        audioElement.pause();
+      }
+    }
   });
 
-  
+  // Toggle play/pause for the current song
+  if (icon.classList.contains('fa-play')) {
+    icon.classList.remove('fa-play');
+    icon.classList.add('fa-pause');
+    playButton.classList.remove('fa-play');
+    playButton.classList.add('fa-pause');
+    audio.play(); // Play audio
+  } else if (icon.classList.contains('fa-pause')) {
+    icon.classList.remove('fa-pause');
+    icon.classList.add('fa-play');
+    playButton.classList.remove('fa-pause');
+    playButton.classList.add('fa-play');
+
+    audio.pause(); // Pause audio
+  }
+}
+
+// Event listener for each song to toggle play/pause on click
+const playSongButtons = document.querySelectorAll('.play-song');
+playSongButtons.forEach((icon, index) => {
+  icon.addEventListener('click', () => {
+    currentSongIndex = index;
+    audio.src = playlist[currentSongIndex].querySelector('audio').src;
+    togglePlayPause(icon); // Pass the clicked icon to toggle play/pause
+  });
+});
+
+// Function to format time as mm:ss
+function formatTime(time) {
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+// Function to update current time and total time
+function updateTimeInfo() {
+  const currentTimeElement = document.querySelector('.current-time');
+  const totalTimeElement = document.querySelector('.total-time');
+
+  // Update current time
+  audio.addEventListener('timeupdate', () => {
+    currentTimeElement.textContent = formatTime(audio.currentTime);
+  });
+
+  // Update total time once metadata is loaded
+  audio.addEventListener('loadedmetadata', () => {
+    totalTimeElement.textContent = formatTime(audio.duration);
+  });
+}
+
+// Call the updateTimeInfo function
+updateTimeInfo();
+
+
+function togglePlayPausefunction() {
+  const currentSongIcon = document.querySelector(`#play${currentSongIndex + 1}`);
+  const isSongPlaying = currentSongIcon.classList.contains('fa-play');
+
+  if (isSongPlaying) {
+    pauseAudio();
+  } else {
+    playAudio();
+  }
+}
+
+// Event listener for the playButton to toggle play/pause
+playButton.addEventListener('click', togglePlayPausefunction);
+
 </script>
 </body>
 </html>
